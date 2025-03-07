@@ -1,23 +1,81 @@
-﻿@model ZapatillasPractica.Models.Zapatilla
+﻿@model ImagenZapatilla
 
-<h1>Detalles de @Model.Nombre</h1>
-<p>@Model.Descripcion</p>
-<p>Precio: @Model.Precio €</p>
+@{
+    // RECUPERAMOS LA ZAPATILLA DEL VIEWDATA
+    var zapatilla = (ZapatillasPractica.Models.Zapatilla)ViewData["ZAPATILLA"];
 
-<!-- Botón para cargar la partial de imágenes con Ajax -->
-<button id="btnloadimagenes">Ver imágenes</button>
+    // PREPARAMOS UN VIEWDATADICTIONARY AUXILIAR PARA PASAR EL IDZAP A LA PARTIAL
+    var viewData = new ViewDataDictionary(ViewData)
+    {
+        { "ZAPATILLA_ID", zapatilla.IdZapatilla }
+    };
+}
 
-<div id="divimagenes"></div>
+<h1 class="text-center text-info mb-4">DETALLES DE LA ZAPATILLA</h1>
 
-@section Scripts {
-    <script>
-        $(document).ready(function(){
-            $("#btnloadimagenes").click(function(){
-                // Llamas por ejemplo a /Zapatillas/GetImagenesParcial?id=@Model.IdZapatilla&pos=1
-                // pos=1 => primera imagen
-                var url = "/Zapatillas/GetImagenesParcial?id=@Model.IdZapatilla&pos=1";
-                $("#divimagenes").load(url);
+<!-- BOTÓN PARA VOLVER A LA LISTA -->
+<div class="mb-3">
+    <a asp-action="Index" class="btn btn-dark">
+        <i class="bi bi-arrow-left"></i> <- BACK
+    </a>
+</div>
+
+<div class="card shadow-lg">
+    <div class="card-header bg-primary text-white">
+        <h4 class="card-title mb-0">INFORMACIÓN DE LA ZAPATILLA</h4>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <!-- COLUMNA 1: DATOS BÁSICOS DE LA ZAPATILLA -->
+            <div class="col-md-6 mb-3">
+                <p>
+                    <strong>ID ZAPATILLA:</strong>
+                    <span class="badge bg-danger">@zapatilla.IdZapatilla</span>
+                </p>
+                <p>
+                    <strong>NOMBRE:</strong>
+                    <span class="fw-semibold">@zapatilla.Nombre</span>
+                </p>
+                <p>
+                    <strong>PRECIO:</strong>
+                    <span class="fw-semibold text-success">@zapatilla.Precio €</span>
+                </p>
+                <p>
+                    <strong>DESCRIPCIÓN:</strong><br />
+                    <span>@zapatilla.Descripcion</span>
+                </p>
+            </div>
+
+            <!-- COLUMNA 2: IMAGEN Y PAGINACIÓN (LA PARTIAL) -->
+            <div class="col-md-6 border-start">
+                <!-- INYECTAMOS LA PARTIAL CON LA IMAGEN Y LA PAGINACIÓN -->
+                @Html.Partial("_ImagenPartial", Model, viewData)
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // DELEGAMOS EL EVENTO CLICK EN "CAMBIAR-IMAGEN"
+        $(document).on("click", ".cambiar-imagen", function (e) {
+            e.preventDefault();
+
+            var posicion = $(this).data("posicion");
+            var zapatilla = $(this).data("zapatilla");
+
+            $.ajax({
+                url: "/Zapatillas/GetImagen",
+                type: "GET",
+                data: { posicion: posicion, zapatilla: zapatilla },
+                success: function (data) {
+                    // REEMPLAZAMOS EL CONTENIDO DEL CONTENEDOR
+                    $("#imagen-container").html(data);
+                },
+                error: function () {
+                    alert("No se pudo cargar la imagen.");
+                }
             });
         });
-    </script>
-}
+    });
+</script>

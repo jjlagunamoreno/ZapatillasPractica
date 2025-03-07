@@ -1,14 +1,33 @@
-﻿@model List<ZapatillasPractica.Models.Zapatilla>
+﻿@model List<Zapatilla>
 
-<h1>Lista Zapatillas</h1>
-<ul>
-    @foreach (var zap in Model)
+@{
+    ViewData["Title"] = "Lista de Zapatillas";
+}
+
+<h2 class="text-center text-primary mb-4">Catálogo de Zapatillas</h2>
+
+<div class="row">
+    @foreach (Zapatilla zap in Model)
     {
-        <li>
-            <a asp-action="Details" asp-route-id="@zap.IdZapatilla">
-                @zap.Nombre
-            </a>
-            - @zap.Precio €
-        </li>
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">@zap.Nombre</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        <strong>ID Producto:</strong>
+                        <span class="badge bg-secondary">@zap.IdZapatilla</span>
+                    </p>
+                    <a asp-action="Details"
+                       asp-route-zapatilla="@zap.IdZapatilla"
+                       class="btn btn-outline-primary">
+                        Ver Detalles
+                    </a>
+                </div>
+            </div>
+        </div>
     }
-</ul>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

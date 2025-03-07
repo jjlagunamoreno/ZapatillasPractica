@@ -1,0 +1,63 @@
+﻿@model ImagenZapatilla
+
+<div id="imagen-container">
+    <h3 class="text-primary">Imagen @ViewData["POSICION"] de @ViewData["REGISTROS"]</h3>
+
+    <div class="d-flex gap-2 mb-3">
+        <button type="button" class="btn btn-outline-primary cambiar-imagen"
+                data-posicion="1" data-zapatilla="@ViewData["ZAPATILLA_ID"]">
+            PRIMERO
+        </button>
+
+        <button type="button" class="btn btn-outline-primary cambiar-imagen"
+                data-posicion="@(Convert.ToInt32(ViewData["POSICION"]) - 1)"
+                data-zapatilla="@ViewData["ZAPATILLA_ID"]">
+            ANTERIOR
+        </button>
+
+        <button type="button" class="btn btn-outline-primary cambiar-imagen"
+                data-posicion="@(Convert.ToInt32(ViewData["POSICION"]) + 1)"
+                data-zapatilla="@ViewData["ZAPATILLA_ID"]">
+            SIGUIENTE
+        </button>
+
+        <button type="button" class="btn btn-outline-primary cambiar-imagen"
+                data-posicion="@ViewData["REGISTROS"]"
+                data-zapatilla="@ViewData["ZAPATILLA_ID"]">
+            ULTIMO
+        </button>
+    </div>
+
+
+    <div class="row">
+        <div class="col-6 offset-3">
+            <img src="@Model.UrlImagen" class="img-fluid" />
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // DELEGAMOS EVENTO PARA CAMBIAR IMAGEN
+            $(document).on("click", ".cambiar-imagen", function (e) {
+                e.preventDefault();
+                var posicion = $(this).data("posicion");
+                var zapatilla = $(this).data("zapatilla");
+
+                $.ajax({
+                    url: "/Zapatillas/GetImagen",
+                    type: "GET",
+                    data: { posicion: posicion, zapatilla: zapatilla },
+                    success: function (data) {
+                        // REEMPLAZAMOS LA VISTA PARCIAL
+                        $("#imagen-container").html(data);
+                    },
+                    error: function () {
+                        alert("No se pudo cargar la imagen.");
+                    }
+                });
+            });
+        });
+    </script>
+}
