@@ -1,0 +1,14 @@
+﻿@model List<ZapatillasPractica.Models.Zapatilla>
+
+<h1>Lista Zapatillas</h1>
+<ul>
+    @foreach (var zap in Model)
+    {
+        <li>
+            <a asp-action="Details" asp-route-id="@zap.IdZapatilla">
+                @zap.Nombre
+            </a>
+            - @zap.Precio €
+        </li>
+    }
+</ul>

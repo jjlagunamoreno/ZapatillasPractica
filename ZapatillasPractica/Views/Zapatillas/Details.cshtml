@@ -1,0 +1,23 @@
+﻿@model ZapatillasPractica.Models.Zapatilla
+
+<h1>Detalles de @Model.Nombre</h1>
+<p>@Model.Descripcion</p>
+<p>Precio: @Model.Precio €</p>
+
+<!-- Botón para cargar la partial de imágenes con Ajax -->
+<button id="btnloadimagenes">Ver imágenes</button>
+
+<div id="divimagenes"></div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function(){
+            $("#btnloadimagenes").click(function(){
+                // Llamas por ejemplo a /Zapatillas/GetImagenesParcial?id=@Model.IdZapatilla&pos=1
+                // pos=1 => primera imagen
+                var url = "/Zapatillas/GetImagenesParcial?id=@Model.IdZapatilla&pos=1";
+                $("#divimagenes").load(url);
+            });
+        });
+    </script>
+}
